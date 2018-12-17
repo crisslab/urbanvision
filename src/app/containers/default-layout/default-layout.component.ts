@@ -20,4 +20,8 @@ export class DefaultLayoutComponent {
       attributes: true
     });
   }
+
+  logout(){
+    window.location.href = 'http://localhost:4200/#/';
+  }
 }

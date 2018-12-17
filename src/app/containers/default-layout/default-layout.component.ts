@@ -21,7 +21,4 @@ export class DefaultLayoutComponent {
     });
   }
 
-  logout(){
-    window.location.href = 'http://localhost:4200/#/';
-  }
 }

@@ -121,7 +121,7 @@
                 </div>
               </div>
             </tab>
-            <tab heading="Video"><iframe width="100%" height="300px" src="https://www.youtube.com/embed/D4oodRh5AOA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></tab>
+            <tab heading="Video"><iframe width="100%" height="300px" src="http://116.203.34.212/node/jsmpeg/view-stream.html" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></tab>
             <tab heading="Dettagli">
                 <div class="row">
                     <div class="col-lg">
@@ -245,13 +245,41 @@
               </tab>
               <tab heading="Dettagli">
                   <div class="row">
-                      <div class="col-lg">
-                        Meteo
+                      <div class="col-lg-2">
+                        Unita
                       </div>
-                      <div class="col-lg col-status">
-                        Aeronautica Militare
+                      <div class="col-lg-10 col-status">
+                        <div class="row"><div class=col-lg>PM10</div><div class=col-lg>{{sensors.get('Opc PM10')}}</div></div>
+                        <div class="row"><div class=col-lg>PM2.5</div><div class=col-lg>{{sensors.get('Opc PM2.5')}}</div></div>
+                        <div class="row"><div class=col-lg>PM1</div><div class=col-lg>{{sensors.get('Opc PM1')}}</div></div>
+                        <div class="row"><div class=col-lg>VOC ppm</div><div class=col-lg>{{sensors.get('Opc VOC ppm')}}</div></div>
+                        <div class="row"><div class=col-lg>VOC temp</div><div class=col-lg>{{sensors.get('VOC temp')}}</div></div>
+                        <div class="row"><div class=col-lg>Pwr Volt</div><div class=col-lg>{{sensors.get('Pwr Volt')}}</div></div>
+                        <div class="row"><div class=col-lg>VOC mv</div><div class=col-lg>{{sensors.get('VOC mv')}}</div></div>
+                        <div class="row"><div class=col-lg>VOC stat</div><div class=col-lg>{{sensors.get('VOC stat')}}</div></div>
+
+                        
+
                       </div>
-                    </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-lg-2">
+                        Stazione
+                      </div>
+                      <div class="col-lg-10 col-status">
+                        <div class="row"><div class=col-lg>Tipo precipitazione</div><div class=col-lg>{{sensors.get('Tipo precipitazione')}}</div></div>
+                        <div class="row"><div class=col-lg>Velocità vento</div><div class=col-lg>{{sensors.get('Velocità vento')}}</div></div>
+                        <div class="row"><div class=col-lg>Raffica vento</div><div class=col-lg>{{sensors.get('Raffica vento')}}</div></div>
+                        <div class="row"><div class=col-lg>Direzione vento</div><div class=col-lg>{{sensors.get('Direzione vento')}}</div></div>
+                        <div class="row"><div class=col-lg>Temperatura aria</div><div class=col-lg>{{sensors.get('Temperatura aria')}}</div></div>
+                        <div class="row"><div class=col-lg>Umidità aria</div><div class=col-lg>{{sensors.get('Umidità aria')}}</div></div>
+                        <div class="row"><div class=col-lg>Pressione atmosferica</div><div class=col-lg>{{sensors.get('Pressione atmosferica')}}</div></div>
+                        <div class="row"><div class=col-lg>Pioggia</div><div class=col-lg>{{sensors.get('Pioggia')}}</div></div>
+
+                        
+
+                      </div>
+                  </div>
               </tab>
             </tabset>
         </div>

@@ -18,7 +18,7 @@ import { DefaultLayoutComponent } from './containers';
 
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
-import { LoginComponent } from './views/login/login.component';
+// import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
@@ -42,6 +42,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { MapComponent } from './views/map/map.component';
 import { MapModule } from './views/map/map.module';
+import { LoginModule } from './views/login/login.module';
 import { WebcamComponent } from './views/webcam/webcam.component';
 import { WebcamModule } from './views/webcam/webcam.module';
 
@@ -60,6 +61,7 @@ import { WebcamModule } from './views/webcam/webcam.module';
     TabsModule.forRoot(),
     ChartsModule,
     MapModule,
+    LoginModule,
     WebcamModule
   ],
   declarations: [
@@ -67,7 +69,7 @@ import { WebcamModule } from './views/webcam/webcam.module';
     ...APP_CONTAINERS,
     P404Component,
     P500Component,
-    LoginComponent,
+    // LoginComponent,
     RegisterComponent
   ],
   providers: [{

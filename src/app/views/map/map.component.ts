@@ -1,10 +1,13 @@
 import { Component, OnInit, HostListener, ElementRef, TemplateRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Element } from '../../model/element.model';
 import { JsonApiService } from "../../services/json-api.service"
 import { NominatimService } from '../../services/nominatim/nominatim.service';
 import { ReverseObject } from '../../model/nominatim/reverseObject.model';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { switchMap } from 'rxjs/operators';
+import { xml2json } from 'xml-js';
 
 
 declare var ol: any;
@@ -25,6 +28,7 @@ export class MapComponent implements OnInit {
 
   modalRef: BsModalRef;
   mapServices = new Map();
+  sensors = new Map();
   iconServices = Array();
   modalTitle : string;
   points : Point[] = [];
@@ -35,11 +39,18 @@ export class MapComponent implements OnInit {
   address : any;
   latitude: number = 45.438158;
   longitude: number = 10.993742;
+  lat: number = 41.892884;
+  lng: number = 12.432740;
   markerSource = new ol.source.Vector();
   disabled = true;
   currentArea;
   currentLayers : any = Array();
   styles = new Map();
+  meteo = "Aeronatica";
+  nome_stazione = "";
+  private sub: any;
+  private city: string;
+
 
   //-------
 
@@ -131,7 +142,7 @@ export class MapComponent implements OnInit {
 
 
 
-  constructor(private modalService: BsModalService,private eRef: ElementRef, public jsonApiService : JsonApiService, public nominatim : NominatimService) { 
+  constructor(private route: ActivatedRoute, private modalService: BsModalService,private eRef: ElementRef, public jsonApiService : JsonApiService, public nominatim : NominatimService) { 
     this.text = 'no clicks yet';
   }
 
@@ -154,8 +165,27 @@ export class MapComponent implements OnInit {
   }
 
 
+  initializeMap(){
+    
+  }
 
   ngOnInit() {
+
+
+
+    this.sub = this.route.params.subscribe(params => {
+      console.log(params['city']);
+      this.city = params['city'];
+      if(this.city == "Roma"){
+        this.lat = 41.892884;
+        this.lng = 12.432740;
+      }else {
+        this.lat = 44.177091;
+        this.lng = 12.161291;
+      }
+      this.initializeMap();
+      // In a real app: dispatch action to load the details here.
+   });
     
 
   this.mapServices = new Map([
@@ -170,6 +200,28 @@ export class MapComponent implements OnInit {
       [ "Punto Luce", false ]
 
   ]);
+
+  this.sensors = new Map([
+    [ "Opc PM1", "" ],
+    [ "Opc PM2.5", "" ],
+    [ "Opc PM10", "" ],
+    [ "VOC ppm", "" ],
+    [ "VOC temp", "" ],
+    [ "Pwr Volt", "" ],
+    [ "VOC mv", "" ],
+    [ "VOC stat", "" ],
+    [ "Punto Luce", "" ],
+    [ "Tipo precipitazione", "" ],
+    [ "Velocità vento", "" ],
+    [ "Raffica vento", "" ],
+    [ "Direzione vento", "" ],
+    [ "Temperatura aria", "" ],
+    [ "Umidità aria", "" ],
+    [ "Pressione atmosferica", "" ],
+    [ "Pioggia", "" ]
+  ]);
+
+
 
 
    
@@ -237,9 +289,11 @@ export class MapComponent implements OnInit {
     })
     //this.markerSource.addFeature(iconFeature);
 
+    
+
     this.view = new ol.View({
-      center: ol.proj.fromLonLat([this.longitude, this.latitude]),
-      zoom: 17
+      center: ol.proj.fromLonLat([this.lng,this.lat]),
+      zoom: 15
     });
 
 
@@ -315,11 +369,14 @@ export class MapComponent implements OnInit {
           that.address = reverseObject.address.road;
           text += "<div><b>Tipo</b> : "+feature.get("name")+"</div>";
           var str = reverseObject.display_name; 
-          var splitted = str.split(",", 1); 
-          text += "<div><b>Posizione</b> : "+splitted[0]+"</div>";
+          console.log(str);
+          var splitted = str.split(",", 2); 
+          text += "<div><b>Posizione</b> : "+splitted[0] +" "+ splitted[1] +"</div>";
           
           services.forEach(element => {
             that.iconServices.push(element);
+            that.template(element);
+
             //icons_text += '<img class="thumb" style="heigth : 25px; width : 25px;" src="../../../assets/img/servizi/'+element+'.png">&nbsp';
           });
           //text += icons_text;
@@ -339,6 +396,42 @@ export class MapComponent implements OnInit {
     // });
   }
 
+  //COMPILA VALORI TEMPLATE
+  template(element : string){
+    var that = this;
+    if(element == "Monitoraggio ambientale"){
+      this.jsonApiService.getNetsens().subscribe(response => {
+        
+
+
+        var json = xml2json(response, {compact: true, spaces: 4});
+        console.log(json);
+        var obj = JSON.parse(json);
+        var unita = obj.netsens.stazione.unita;
+        unita.forEach(unita => {
+          var sensors = unita.sensore;
+          sensors.forEach(sensor => {
+            var misura = sensor.misura;
+            if(misura){
+              var lastMisura = sensor.misura[misura.length - 1];
+              console.log(lastMisura);
+              if(lastMisura){
+                var attributes = lastMisura._attributes;
+                console.log(attributes);
+                if(attributes){
+                  that.sensors.set(sensor._attributes.nome, attributes.valore + " " +sensor._attributes.unita);
+                }
+              }
+            }
+          });
+        });
+        console.log(that.sensors);
+        that.nome_stazione = obj.netsens.stazione._attributes.nome;
+        console.log(obj.netsens.stazione._attributes.nome);
+      });
+    }
+
+  }
 
   addArea(values){
     this.arrayServices = [];

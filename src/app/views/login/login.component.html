@@ -23,6 +23,13 @@
                     </div>
                     <input type="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
                   </div>
+                  <div class="input-group mb-3">
+
+                    <ngx-select-dropdown style="width: 100%" (change)="changeValue($event)" [config]="config" [options]="dropdownOptions" 
+                            [(value)]="dataModelOptions" [multiple]="false" ></ngx-select-dropdown>
+
+
+                  </div>
                   <div class="row">
                     <div class="col-6">
                       <button type="button" (click)="login()"  class="btn btn-primary px-4">Login</button>
